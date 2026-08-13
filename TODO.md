@@ -1,4 +1,5 @@
-[] Desenhar todo o plano
+[x] Desenhar todo o plano
+[x] Desenhar a cobra
 [] Spot aleatorio da primeira maça
 [] Spot aleatorio do inicio da snake
 [] Ler Input do teclado
