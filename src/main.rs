@@ -36,6 +36,16 @@ async fn main() {
         let fps = get_fps();
         println!("Current fps: {}",fps);
 
+        //iterator - idiomatic rust
+        for &(col, row) in &snake {
+            draw_rectangle(
+                origin_x + col as f32 * cell_size,
+                origin_y + row as f32 * cell_size,
+                cell_size - 2.0 ,
+                cell_size - 2.0 ,
+                GREEN);
+        }
+
         
         next_frame().await
     }
