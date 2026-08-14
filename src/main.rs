@@ -1,8 +1,9 @@
 use macroquad::prelude::*;
+const MOVE_INTERVAL: f64 = 0.2;
 
 #[macroquad::main("BasicShapes")]
-
 async fn main() {
+    let mut last_move = get_time();
     let mut snake = vec![
         (15, 15),
         (14, 15),
@@ -47,13 +48,18 @@ async fn main() {
         }
 
 
-        let (current_head_x, current_head_y) = snake[0];
-        let next_head = (
-            (current_head_x + 1) % cols,
-            current_head_y
-        );
-        snake.insert(0, next_head);
-        snake.pop();
+        if get_time() - last_move >= MOVE_INTERVAL {
+            let (current_head_x, current_head_y) = snake[0];
+            let next_head = (
+                (current_head_x + 1) % cols,
+                current_head_y
+            );
+            snake.insert(0, next_head);
+            snake.pop();    
+
+            last_move = get_time(); //updates time
+        }
+        
 
         
         
