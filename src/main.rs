@@ -46,6 +46,16 @@ async fn main() {
                 GREEN);
         }
 
+
+        let (current_head_x, current_head_y) = snake[0];
+        let mut next_head = (current_head_x + 1, current_head_y);
+        if next_head.0>= rows {
+            next_head.0 = 0; 
+        }
+        snake.insert(0, next_head);
+        snake.pop();
+
+        
         
         next_frame().await
     }
