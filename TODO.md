@@ -2,7 +2,7 @@
 [x] Desenhar a cobra
 [] Spot aleatorio da primeira maça
 [] Spot aleatorio do inicio da snake
-[] Ler Input do teclado
-[] Input do teclado -> atualizar position snake
+[x] Ler Input do teclado
+[x] Input do teclado -> atualizar position snake
 [] Out of bounds event -> game over
 [] Catch apple event
