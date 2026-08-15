@@ -18,7 +18,8 @@ async fn main() {
     let origin_x = (screen_width() - grid_px_w) / 2.0 ;
     let origin_y = (screen_height() - grid_px_h) / 2.0;
 
-    let mut direction = (1,0);
+    let mut direction = (0,-1);
+    
 
     loop {
         //initial screen height -> 600
@@ -48,6 +49,10 @@ async fn main() {
                 GREEN);
         }
 
+        if is_key_pressed(KeyCode::Up) {direction = (0,-1)}
+        if is_key_pressed(KeyCode::Down) {direction = (0,1)}
+        if is_key_pressed(KeyCode::Left) {direction = (-1,0)}
+        if is_key_pressed(KeyCode::Right) {direction = (1,0)}
 
         if get_time() - last_move >= MOVE_INTERVAL {
             let (current_head_x, current_head_y) = snake[0];
