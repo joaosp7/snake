@@ -18,6 +18,7 @@ async fn main() {
     let origin_x = (screen_width() - grid_px_w) / 2.0 ;
     let origin_y = (screen_height() - grid_px_h) / 2.0;
 
+    let mut direction = (1,0);
 
     loop {
         //initial screen height -> 600
@@ -51,8 +52,8 @@ async fn main() {
         if get_time() - last_move >= MOVE_INTERVAL {
             let (current_head_x, current_head_y) = snake[0];
             let next_head = (
-                (current_head_x + 1) % cols,
-                current_head_y
+                (current_head_x + direction.0 as i32).rem_euclid(cols),
+                (current_head_y + direction.1 as i32).rem_euclid(rows)
             );
             snake.insert(0, next_head);
             snake.pop();    
