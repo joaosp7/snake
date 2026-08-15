@@ -3,6 +3,7 @@ use macroquad::{
     rand::{gen_range, srand},
 };
 const MOVE_INTERVAL: f64 = 0.2;
+const SWIPE_THRESHOLD: f32 = 30.0;
 
 #[macroquad::main("BasicShapes")]
 async fn main() {
@@ -18,6 +19,7 @@ async fn main() {
     let origin_y = (screen_height() - grid_px_h) / 2.0;
 
     let mut direction = (0, -1);
+    let mut touch_start: Option<(u64, Vec2)> = None;
 
     srand((get_time() * 1_000.0) as u64);
     let mut apple_position = (gen_range(0, cols), gen_range(0, rows));
@@ -69,6 +71,34 @@ async fn main() {
         }
         if is_key_pressed(KeyCode::Right) && direction != (-1, 0) {
             direction = (1, 0)
+        }
+
+        for touch in touches() {
+            match touch.phase {
+                TouchPhase::Started => touch_start = Some((touch.id, touch.position)),
+                TouchPhase::Ended => {
+                    if let Some((id, start)) = touch_start.take() {
+                        if id == touch.id {
+                            let delta = touch.position - start;
+                            if delta.length() >= SWIPE_THRESHOLD {
+                                if delta.x.abs() > delta.y.abs() {
+                                    if delta.x > 0.0 && direction != (-1, 0) {
+                                        direction = (1, 0);
+                                    } else if delta.x < 0.0 && direction != (1, 0) {
+                                        direction = (-1, 0);
+                                    }
+                                } else if delta.y > 0.0 && direction != (0, -1) {
+                                    direction = (0, 1);
+                                } else if delta.y < 0.0 && direction != (0, 1) {
+                                    direction = (0, -1);
+                                }
+                            }
+                        }
+                    }
+                }
+                TouchPhase::Cancelled => touch_start = None,
+                TouchPhase::Moved | TouchPhase::Stationary => {}
+            }
         }
 
         if get_time() - last_move >= MOVE_INTERVAL {
