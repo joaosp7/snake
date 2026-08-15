@@ -28,9 +28,9 @@ async fn main() {
     };
 
     srand(seed);
-    let apple_position = (
-        gen_range(0, rows),
-        gen_range(0, cols)
+    let mut apple_position = (
+        gen_range(0, cols),
+        gen_range(0, rows)
     );
     loop {
     
@@ -51,15 +51,12 @@ async fn main() {
         let fps = get_fps();
         println!("Current fps: {}",fps);
 
-
-        if snake.len() == 3 {
-            draw_rectangle(
-                origin_x + apple_position.0 as f32 * cell_size,
-                origin_y + apple_position.1 as f32 * cell_size,
-                cell_size - 2.0 ,
-                cell_size - 2.0 ,
-                BLACK);
-        }
+        draw_rectangle(
+            origin_x + apple_position.0 as f32 * cell_size,
+            origin_y + apple_position.1 as f32 * cell_size,
+            cell_size - 2.0 ,
+            cell_size - 2.0 ,
+            BLACK);
         
         
         //iterator - idiomatic rust
@@ -72,10 +69,10 @@ async fn main() {
                 GREEN);
         }
 
-        if is_key_pressed(KeyCode::Up) {direction = (0,-1)}
-        if is_key_pressed(KeyCode::Down) {direction = (0,1)}
-        if is_key_pressed(KeyCode::Left) {direction = (-1,0)}
-        if is_key_pressed(KeyCode::Right) {direction = (1,0)}
+        if is_key_pressed(KeyCode::Up) && direction != (0,1) {direction = (0,-1)}
+        if is_key_pressed(KeyCode::Down) && direction != (0,-1) {direction = (0,1)}
+        if is_key_pressed(KeyCode::Left) && direction != (1,0) {direction = (-1,0)}
+        if is_key_pressed(KeyCode::Right) && direction != (-1,0) {direction = (1,0)}
 
         if get_time() - last_move >= MOVE_INTERVAL {
             let (current_head_x, current_head_y) = snake[0];
@@ -83,14 +80,30 @@ async fn main() {
                 (current_head_x + direction.0 as i32).rem_euclid(cols),
                 (current_head_y + direction.1 as i32).rem_euclid(rows)
             );
+
+            if snake.iter().take(snake.len() - 1).any(|&x| x == next_head) {
+
+                println!("Game is over!");
+                panic!("You are dead.");
+                
+            }
             snake.insert(0, next_head);
+
+            
+            if next_head == apple_position {
+                
+            apple_position = (
+                gen_range(0, cols),
+                gen_range(0, rows)
+            );
+            
+            } else {    
             snake.pop();    
+            }
 
             last_move = get_time(); //updates time
         }
 
-        println!("APPLE X {}", apple_position.0);
-        println!("APPLE Y {}", apple_position.1);
 
         
         
