@@ -1,4 +1,5 @@
 use macroquad::prelude::*;
+
 const MOVE_INTERVAL: f64 = 0.2;
 
 #[macroquad::main("BasicShapes")]
