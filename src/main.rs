@@ -2,8 +2,6 @@ use macroquad::{
     prelude::*,
     rand::{gen_range, srand},
 };
-use std::time::{SystemTime, UNIX_EPOCH};
-
 const MOVE_INTERVAL: f64 = 0.2;
 
 #[macroquad::main("BasicShapes")]
@@ -21,12 +19,7 @@ async fn main() {
 
     let mut direction = (0, -1);
 
-    let seed = match SystemTime::now().duration_since(UNIX_EPOCH) {
-        Ok(time) => time.as_secs(),
-        Err(_) => panic!("SystemTime before UNIX Epoch!"),
-    };
-
-    srand(seed);
+    srand((get_time() * 1_000.0) as u64);
     let mut apple_position = (gen_range(0, cols), gen_range(0, rows));
     loop {
         //initial screen height -> 600
