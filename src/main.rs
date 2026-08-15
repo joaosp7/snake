@@ -5,6 +5,24 @@ use macroquad::{
 const MOVE_INTERVAL: f64 = 0.2;
 const SWIPE_THRESHOLD: f32 = 30.0;
 
+fn apply_swipe_direction(direction: &mut (i32, i32), delta: Vec2) {
+    if delta.length() < SWIPE_THRESHOLD {
+        return;
+    }
+
+    if delta.x.abs() > delta.y.abs() {
+        if delta.x > 0.0 && *direction != (-1, 0) {
+            *direction = (1, 0);
+        } else if delta.x < 0.0 && *direction != (1, 0) {
+            *direction = (-1, 0);
+        }
+    } else if delta.y > 0.0 && *direction != (0, -1) {
+        *direction = (0, 1);
+    } else if delta.y < 0.0 && *direction != (0, 1) {
+        *direction = (0, -1);
+    }
+}
+
 #[macroquad::main("BasicShapes")]
 async fn main() {
     let mut last_move = get_time();
@@ -76,28 +94,26 @@ async fn main() {
         for touch in touches() {
             match touch.phase {
                 TouchPhase::Started => touch_start = Some((touch.id, touch.position)),
-                TouchPhase::Ended => {
-                    if let Some((id, start)) = touch_start.take() {
+                TouchPhase::Moved => {
+                    if let Some((id, start)) = touch_start {
                         if id == touch.id {
                             let delta = touch.position - start;
                             if delta.length() >= SWIPE_THRESHOLD {
-                                if delta.x.abs() > delta.y.abs() {
-                                    if delta.x > 0.0 && direction != (-1, 0) {
-                                        direction = (1, 0);
-                                    } else if delta.x < 0.0 && direction != (1, 0) {
-                                        direction = (-1, 0);
-                                    }
-                                } else if delta.y > 0.0 && direction != (0, -1) {
-                                    direction = (0, 1);
-                                } else if delta.y < 0.0 && direction != (0, 1) {
-                                    direction = (0, -1);
-                                }
+                                apply_swipe_direction(&mut direction, delta);
+                                touch_start = None;
                             }
                         }
                     }
                 }
+                TouchPhase::Ended => {
+                    if let Some((id, start)) = touch_start.take() {
+                        if id == touch.id {
+                            apply_swipe_direction(&mut direction, touch.position - start);
+                        }
+                    }
+                }
                 TouchPhase::Cancelled => touch_start = None,
-                TouchPhase::Moved | TouchPhase::Stationary => {}
+                TouchPhase::Stationary => {}
             }
         }
 
