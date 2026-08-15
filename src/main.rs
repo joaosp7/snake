@@ -1,4 +1,5 @@
-use macroquad::prelude::*;
+use std::time::{SystemTime, UNIX_EPOCH};
+use macroquad::{prelude::*, rand::{gen_range, srand}};
 
 const MOVE_INTERVAL: f64 = 0.2;
 
@@ -20,9 +21,19 @@ async fn main() {
     let origin_y = (screen_height() - grid_px_h) / 2.0;
 
     let mut direction = (0,-1);
-    
 
+    let seed = match SystemTime::now().duration_since(UNIX_EPOCH){
+        Ok(time) => time.as_secs(),
+        Err(_) => panic!("SystemTime before UNIX Epoch!")
+    };
+
+    srand(seed);
+    let apple_position = (
+        gen_range(0, rows),
+        gen_range(0, cols)
+    );
     loop {
+    
         //initial screen height -> 600
         // initial screen width -> 800
         clear_background(RED);
@@ -40,6 +51,17 @@ async fn main() {
         let fps = get_fps();
         println!("Current fps: {}",fps);
 
+
+        if snake.len() == 3 {
+            draw_rectangle(
+                origin_x + apple_position.0 as f32 * cell_size,
+                origin_y + apple_position.1 as f32 * cell_size,
+                cell_size - 2.0 ,
+                cell_size - 2.0 ,
+                BLACK);
+        }
+        
+        
         //iterator - idiomatic rust
         for &(col, row) in &snake {
             draw_rectangle(
@@ -66,7 +88,9 @@ async fn main() {
 
             last_move = get_time(); //updates time
         }
-        
+
+        println!("APPLE X {}", apple_position.0);
+        println!("APPLE Y {}", apple_position.1);
 
         
         

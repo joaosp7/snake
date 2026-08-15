@@ -1,6 +1,6 @@
 [x] Desenhar todo o plano
 [x] Desenhar a cobra
-[] Spot aleatorio da primeira maça
+[x] Spot aleatorio da primeira maça
 [] Spot aleatorio do inicio da snake
 [x] Ler Input do teclado
 [x] Input do teclado -> atualizar position snake
