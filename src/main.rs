@@ -44,18 +44,18 @@ async fn main() {
     loop {
         //initial screen height -> 600
         // initial screen width -> 800
-        clear_background(RED);
+        clear_background(Color::from_hex(0xf1aaaa));
         //vertical lines
         for i in 1..=cols {
             let x = origin_x + cell_size * i as f32;
-            draw_line(x, origin_y, x, origin_y + grid_px_h, 2.0, BLUE);
+            draw_line(x, origin_y, x, origin_y + grid_px_h, 2.0, Color::from_hex(0xcedada));
         }
         //horizontal lines
         for i in 1..=rows {
             let y = origin_y + cell_size * i as f32;
-            draw_line(origin_x, y, origin_x + grid_px_w, y, 2.0, BLUE);
+            draw_line(origin_x, y, origin_x + grid_px_w, y, 2.0, Color::from_hex(0xcedada));
         }
-        draw_rectangle_lines(origin_x, origin_y, grid_px_w, grid_px_h, 2.0, BLUE);
+        draw_rectangle_lines(origin_x, origin_y, grid_px_w, grid_px_h, 2.0, Color::from_hex(0xcedada));
         let fps = get_fps();
         println!("Current fps: {}", fps);
 
